@@ -1,0 +1,53 @@
+if (process.env.PROD_TYPE !== "docker") {
+  require("dotenv").config();
+}
+
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
+
+const {
+  MONGO_USER,
+  MONGO_USER_PASSWORD,
+  MONGO_COLLECTION,
+  MONGO_PORT,
+  SERVICE_PORT,
+  MONGO_IP,
+  API_PREFIX,
+} = process.env;
+
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
+
+const start = async () => {
+  try {
+    const serviceLog = "Auth service running on port: " + SERVICE_PORT;
+    const mongoLog = "Auth database running on port: " + MONGO_PORT;
+
+    app.listen(SERVICE_PORT, () => console.log(serviceLog));
+    mongoose
+      .connect(
+        (MONGO = `mongodb://${MONGO_IP}:${MONGO_PORT}/${MONGO_COLLECTION}`),
+        {
+          user: MONGO_USER,
+          pass: MONGO_USER_PASSWORD,
+          authSource: "admin",
+        },
+      )
+      .then(() => console.log(mongoLog));
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+start();
+
+const Auth = require("./routes/v1/POST/Auth");
+const Refresh = require("./routes/v1/POST/Refresh");
+
+app.use(API_PREFIX, Auth);
+app.use(API_PREFIX, Refresh);
