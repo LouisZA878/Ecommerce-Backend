@@ -8,7 +8,7 @@ const Auth = async (req, res, next) => {
   const accessToken = req.cookies["accessToken"];
   const refreshToken = req.cookies["refreshToken"];
 
-  if (!accessToken && !refreshToken) {
+  if (!accessToken || !refreshToken) {
     return res.status(401).send({
       error: [],
       data: {},
@@ -20,7 +20,6 @@ const Auth = async (req, res, next) => {
   try {
     const decodeAccessToken = jwt.verify(accessToken, ACCESS_TOKEN_SIGNATURE);
     req.userId = decodeAccessToken.id;
-    req.userRole = decodeAccessToken.role;
 
     return next();
   } catch (err) {
@@ -31,8 +30,8 @@ const Auth = async (req, res, next) => {
         REFRESH_TOKEN_SIGNATURE,
       );
 
-      const { id, role } = decodeRefreshToken;
-      const accessToken = createAccessToken(id, role);
+      const { id } = decodeRefreshToken;
+      const accessToken = createAccessToken(id);
 
       res.cookie("accessToken", accessToken, {
         secure: false,
@@ -42,12 +41,10 @@ const Auth = async (req, res, next) => {
       });
 
       req.userId = id;
-      req.userRole = role;
 
       return next();
     } catch (err) {
       res.status(401).send({
-        error: [],
         data: {},
         success: false,
         description: "Unauthorized access",
