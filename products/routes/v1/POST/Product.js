@@ -14,6 +14,8 @@ const {
 } = require("../../../components/validators/Output");
 const validationArray = require("../../../components/middleware/validationArray");
 
+const { KafkaProducer } = require("../../../components/controllers/Kafka");
+
 const Auth = require("../../../components/middleware/Auth");
 
 const {
@@ -59,9 +61,13 @@ router.post(
     delete productOptionals.quantity;
 
     const newProduct = new Product(productOptionals);
-    const productResult = await newProduct
-      .save()
-      .catch((err) => console.error(err.message));
+    const productResult = await newProduct.save().catch((err) => {
+      console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Unsuccessfully created product",
+      });
+    });
 
     if (!productResult) {
       return res.status(400).send({
@@ -76,9 +82,13 @@ router.post(
       quantity: matched.quantity,
       userId,
     });
-    const inventoryResult = await newProductInventory
-      .save()
-      .catch((err) => console.error(err.message));
+    const inventoryResult = await newProductInventory.save().catch((err) => {
+      console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Unsuccessfully created product",
+      });
+    });
 
     if (!inventoryResult) {
       await Product.findOneAndDelete(productResult._id);
@@ -119,6 +129,8 @@ router.post(
         },
       );
     }
+
+    KafkaProducer("info-message", "Successfully created product");
 
     res.send({
       data: {},

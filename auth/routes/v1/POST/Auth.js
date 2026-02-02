@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 
 const User = require("../../../models/User");
 
+const { KafkaProducer } = require("../../../components/controllers/Kafka");
+
 const {
   createAccessToken,
   createRefreshToken,
@@ -31,16 +33,25 @@ router.post(
         password: hashedPassword,
         email,
       });
-      newUser.save().then(() => console.log("Sucessfully created user"));
+      newUser.save().then((data) => {
+        KafkaProducer("user-created", {
+          userId: data._id,
+        });
+      });
+
+      KafkaProducer("info-message", "Successfully created user");
 
       res.status(201).send({
-        error: [],
         data: {},
         success: true,
         description: "Successfully created user",
       });
     } catch (err) {
       console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Unsuccessfully created user",
+      });
       res.status(400).send({
         data: {},
         success: false,
@@ -79,6 +90,8 @@ router.post(
               expires: new Date(Date.now() + 15 * 60 * 1000),
             });
 
+            KafkaProducer("info-message", "User successfully signed in");
+
             return res.status(200).send({
               data: {},
               success: true,
@@ -88,6 +101,10 @@ router.post(
 
           if (err) {
             console.log(err.message);
+            KafkaProducer("error-message", {
+              error: err.message,
+              msg: "User unsuccessful sign in attempt",
+            });
             res.status(400).send({
               data: {},
               success: false,
@@ -97,7 +114,11 @@ router.post(
         });
       }
       if (!response) {
-        res.status(400).send({
+        KafkaProducer("error-message", {
+          error: "Could not find user with the requested email",
+          msg: "User unsuccessful sign in attempt",
+        });
+        return res.status(400).send({
           data: {},
           success: false,
           description: "Unsuccessfully signed in",
@@ -105,7 +126,11 @@ router.post(
       }
     } catch (err) {
       console.error(err.message);
-      res.status(400).send({
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "User unsuccessful sign in attempt",
+      });
+      return res.status(400).send({
         data: {},
         success: false,
         description: "Unsuccessfully signed in",

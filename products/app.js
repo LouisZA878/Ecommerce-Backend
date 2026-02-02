@@ -8,6 +8,8 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
+const { KafkaProducer } = require("./components/controllers/Kafka");
+
 const {
   MONGO_USER,
   MONGO_USER_PASSWORD,
@@ -29,7 +31,10 @@ const start = async () => {
     const serviceLog = "Product service running on port: " + SERVICE_PORT;
     const mongoLog = "Product database running on port: " + MONGO_PORT;
 
-    app.listen(SERVICE_PORT, () => console.log(serviceLog));
+    app.listen(SERVICE_PORT, () => {
+      console.log(serviceLog);
+      KafkaProducer("info-message", serviceLog);
+    });
     mongoose
       .connect(
         (MONGO = `mongodb://${MONGO_IP}:${MONGO_PORT}/${MONGO_COLLECTION}`),
@@ -39,9 +44,16 @@ const start = async () => {
           authSource: "admin",
         },
       )
-      .then(() => console.log(mongoLog));
+      .then(() => {
+        console.log(mongoLog);
+        KafkaProducer("info-message", mongoLog);
+      });
   } catch (err) {
     console.error(err.message);
+    KafkaProducer("error-message", {
+      error: err.message,
+      msg: "Products server could not start up",
+    });
   }
 };
 

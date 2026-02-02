@@ -11,6 +11,8 @@ const {
 const validationArray = require("../../../components/middleware/validationArray");
 const { body, matchedData } = require("../../../components/validators/Output");
 
+const { KafkaProducer } = require("../../../components/controllers/Kafka");
+
 const collectionName = process.env.MONGO_IMAGE_COLLECTION;
 
 router.patch(
@@ -68,6 +70,8 @@ router.patch(
         optionals,
       );
 
+      KafkaProducer("info-message", "Successfully updated product information");
+
       res.status(200).send({
         data: {},
         success: true,
@@ -75,6 +79,10 @@ router.patch(
       });
     } catch (err) {
       console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Could not update the product information",
+      });
       res.status(400).send({
         data: {},
         success: false,

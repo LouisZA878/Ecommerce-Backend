@@ -14,6 +14,8 @@ const {
 } = require("../../../components/validators/Output");
 const validationArray = require("../../../components/middleware/validationArray");
 
+const { KafkaProducer } = require("../../../components/controllers/Kafka");
+
 const collectionName = process.env.MONGO_IMAGE_COLLECTION;
 
 router.get("/product/image/:id", Auth, async (req, res) => {
@@ -33,13 +35,19 @@ router.get("/product/image/:id", Auth, async (req, res) => {
       });
     });
 
+    KafkaProducer("info-message", "Successfully fetched image");
+
     downloadStream.pipe(res);
   } catch (err) {
     console.error(err.message);
+    KafkaProducer("error-message", {
+      error: err.message,
+      msg: "Could not fetch the image",
+    });
     res.status(400).json({
       data: {},
       success: false,
-      description: "Could not fetch your image",
+      description: "Could not fetch the image",
     });
   }
 });
@@ -107,6 +115,10 @@ router.get(
         },
       ]);
 
+      KafkaProducer(
+        "info-message",
+        "Successfully fetched a list of products from this user",
+      );
       res.status(200).send({
         data: result,
         success: true,
@@ -114,6 +126,10 @@ router.get(
       });
     } catch (err) {
       console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Could not fetch the list of products",
+      });
       res.status(400).send({
         data: {},
         success: false,
@@ -184,6 +200,8 @@ router.get(
         },
       ]);
 
+      KafkaProducer("info-message", "Successfully fetched a list of products");
+
       res.status(200).send({
         data: result,
         success: true,
@@ -191,6 +209,10 @@ router.get(
       });
     } catch (err) {
       console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Could not fetch the list of products",
+      });
       res.status(400).send({
         data: {},
         success: false,

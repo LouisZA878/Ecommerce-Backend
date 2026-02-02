@@ -8,6 +8,8 @@ const Product = require("../../../models/Product");
 const ProductInventory = require("../../../models/ProductInventory");
 const { deleteImage } = require("../../../components/utils/File");
 
+const { KafkaProducer } = require("../../../components/controllers/Kafka");
+
 const collectionName = process.env.MONGO_IMAGE_COLLECTION;
 
 router.delete(
@@ -41,6 +43,8 @@ router.delete(
         deleteImage(collectionName, new mongoose.Types.ObjectId(x));
       });
 
+      KafkaProducer("info-message", "Successfully deleted product");
+
       res.status(200).send({
         data: {},
         success: true,
@@ -48,6 +52,10 @@ router.delete(
       });
     } catch (err) {
       console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Could not delete product",
+      });
       res.status(400).send({
         data: {},
         success: false,
@@ -92,6 +100,8 @@ router.delete(
 
       deleteImage(collectionName, new mongoose.Types.ObjectId(imageId));
 
+      KafkaProducer("info-message", "Successfully deleted product");
+
       res.status(200).send({
         data: {},
         success: true,
@@ -99,6 +109,10 @@ router.delete(
       });
     } catch (err) {
       console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Could not delete product image",
+      });
       res.status(400).send({
         data: {},
         success: false,
