@@ -79,7 +79,7 @@ router.post(
               expires: new Date(Date.now() + 15 * 60 * 1000),
             });
 
-            res.json({
+            return res.status(200).send({
               data: {},
               success: true,
               description: "Successfully signed in",
@@ -87,13 +87,20 @@ router.post(
           }
 
           if (err) {
-            console.log(err);
+            console.log(err.message);
             res.status(400).send({
               data: {},
               success: false,
               description: "Unsuccessfully signed in",
             });
           }
+        });
+      }
+      if (!response) {
+        res.status(400).send({
+          data: {},
+          success: false,
+          description: "Unsuccessfully signed in",
         });
       }
     } catch (err) {
