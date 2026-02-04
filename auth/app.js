@@ -21,9 +21,20 @@ const {
 
 const app = express();
 
-app.use(express.json());
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:8080",
+  "http://127.0.0.1:8080",
+  "http://host.docker.internal:8080", // sometimes needed in Docker
+];
+
+const corsOptions = {
+  origin: true,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(express.json());
 
 const start = async () => {
   try {

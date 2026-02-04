@@ -29,7 +29,7 @@ router.post("/refresh", async (req, res) => {
     res.cookie("accessToken", accessToken, {
       secure: false,
       httpOnly: true,
-      sameSite: "",
+      sameSite: "lax",
       expires: new Date(Date.now() + 15 * 60 * 1000),
     });
     res.status(200).send({

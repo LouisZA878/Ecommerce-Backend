@@ -21,7 +21,7 @@ const ValidationArray = require("../../../components/middleware/ValidationArray"
 router.post(
   "/signup",
   [Email().isEmailExisting(), Password(), Username().isUserExisting()],
-  ValidationArray("Unsuccessfully creater user"),
+  ValidationArray("Unsuccessful sign up attempt"),
   async (req, res) => {
     try {
       const { username, password, email } = matchedData(req);
@@ -50,12 +50,12 @@ router.post(
       console.error(err.message);
       KafkaProducer("error-message", {
         error: err.message,
-        msg: "Unsuccessfully created user",
+        msg: "Unsuccessful sign up attempt",
       });
       res.status(400).send({
         data: {},
         success: false,
-        description: "Unsuccessfully created user",
+        description: "Unsuccessful sign up attempt",
       });
     }
   },
@@ -63,8 +63,8 @@ router.post(
 
 router.post(
   "/signin",
-  [Email(), Password(), Username()],
-  ValidationArray("Unsuccessfully sign in"),
+  [Email(), Password()],
+  ValidationArray("Unsuccessful sign in attempt"),
   async (req, res) => {
     try {
       const { password, email } = matchedData(req);
@@ -80,13 +80,13 @@ router.post(
             res.cookie("refreshToken", refreshToken, {
               httpOnly: true,
               secure: false,
-              sameSite: "",
+              sameSite: "lax",
               expires: new Date(Date.now() + 60 * 60 * 60 * 24 * 1 * 1000),
             });
             res.cookie("accessToken", accessToken, {
               secure: false,
               httpOnly: true,
-              sameSite: "",
+              sameSite: "lax",
               expires: new Date(Date.now() + 15 * 60 * 1000),
             });
 
@@ -103,12 +103,12 @@ router.post(
             console.log(err.message);
             KafkaProducer("error-message", {
               error: err.message,
-              msg: "User unsuccessful sign in attempt",
+              msg: "Unsuccessful sign in attempt",
             });
             res.status(400).send({
               data: {},
               success: false,
-              description: "Unsuccessfully signed in",
+              description: "Unsuccessful sign in attempt",
             });
           }
         });
@@ -116,24 +116,24 @@ router.post(
       if (!response) {
         KafkaProducer("error-message", {
           error: "Could not find user with the requested email",
-          msg: "User unsuccessful sign in attempt",
+          msg: "Unsuccessful sign in attempt",
         });
         return res.status(400).send({
           data: {},
           success: false,
-          description: "Unsuccessfully signed in",
+          description: "Unsuccessful sign in attempt",
         });
       }
     } catch (err) {
       console.error(err.message);
       KafkaProducer("error-message", {
         error: err.message,
-        msg: "User unsuccessful sign in attempt",
+        msg: "Unsuccessful sign in attempt",
       });
       return res.status(400).send({
         data: {},
         success: false,
-        description: "Unsuccessfully signed in",
+        description: "Unsuccessful sign in attempt",
       });
     }
   },
