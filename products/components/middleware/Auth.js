@@ -4,11 +4,9 @@ const { ACCESS_TOKEN_SIGNATURE } = process.env;
 
 const Auth = async (req, res, next) => {
   const accessToken = req.cookies["accessToken"];
-  const refreshToken = req.cookies["refreshToken"];
 
-  if (!accessToken || !refreshToken) {
+  if (!accessToken) {
     return res.status(401).send({
-      error: [],
       data: {},
       success: false,
       description: "Unauthorized access",

@@ -22,9 +22,15 @@ const {
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(cors());
+const corsOptions = {
+  origin: true,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 const start = async () => {
   try {
