@@ -1,0 +1,811 @@
+openapi: 3.0.3
+info:
+  title: Microservice api overview
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+    description: Auth service
+  - url: http://localhost:3002
+    description: Products service
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+tags:
+  - name: Auth
+    description: Endpoints related to authentication
+  - name: Products
+    description: Product-related endpoints
+
+paths:
+  /api/auth/v1/signup:
+    post:
+      tags:
+        - Auth
+      summary: User sign up request.
+      requestBody:
+        description: The user to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+                - email
+              properties:
+                password:
+                  type: string
+                  example: Deiyh4386d3qdn338478923
+                username:
+                  type: string
+                  example: WhyNotSignUp
+                email:
+                  type: string
+                  example: wellthisisawkward123@local.local
+
+      responses:
+        "201":
+          description: Successful user sign up attempt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully created user
+        "400":
+          description: Unsuccessful user sign up attempt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unsuccessful sign up attempt
+
+  /api/auth/v1/signin:
+    post:
+      tags:
+        - Auth
+      summary: User sign in request.
+      requestBody:
+        description: User sign in.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - email
+              properties:
+                password:
+                  type: string
+                  example: Deiyh4386d3qdn338478923
+                email:
+                  type: string
+                  example: wellthisisawkward123@local.local
+      security: []
+
+      responses:
+        "201":
+          description: Successful user sign in attempt
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: accessToken=eyJhbGciOiJIUzdeade42342DEI1NiIsInR5cCI6IkpXVCJ3429.eyJdepZCI6IjY5ODM0NDU4OWQwZmE3ZGQwZTQ0ZmExOCIsImlhdCI6MTc3MDIxMTAzMSwiZXhwIjoxNzcwMjExOTMxLCJpc3MiOiJUZWNoeVRlY2h5In0.c3HXQJmxfOFXD4xAgNR75D_FM5ZGUD5z0mBjjpkaV44; Path=/; HttpOnly; Expires=Wed, 04 Feb 2026 13:32:12 GMT;
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully signed in
+        "400":
+          description: Unsuccessful user sign up attempt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unsuccessful sign up attempt
+
+  /api/auth/v1/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Refresh access token.
+
+      responses:
+        "200":
+          description: Refresh access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Tokens refreshed
+        "400":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized acces
+
+  /api/product/v1/product/add:
+    post:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: Create a product.
+      requestBody:
+        description: Product creation.
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                categories:
+                  type: array
+                  example: ["laptop"]
+                quantity:
+                  type: integer
+                  example: 2000
+                price:
+                  type: integer
+                  example: 20
+                description:
+                  type: string
+                  example: Why not just generate some lorum ipsum?
+                name:
+                  type: string
+                  example: AWholeTestProduct
+                files:
+                  type: string
+                  format: binary
+
+      responses:
+        "201":
+          description: Successful user sign in attempt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully created product
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Product not created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unsuccessfully created product
+
+  /api/product/v1/product/update:
+    patch:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: Update product information.
+      requestBody:
+        description: Product update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  type: string
+                  example: "dyryg436476hd2n4893278hu2d"
+                categories:
+                  type: array
+                  example: ["laptop"]
+                quantity:
+                  type: integer
+                  example: 2000
+                price:
+                  type: integer
+                  example: 20
+                description:
+                  type: string
+                  example: Why not just generate some lorum ipsum?
+                name:
+                  type: string
+                  example: AWholeTestProduct
+
+      responses:
+        "200":
+          description: Successfully updated product information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully updated product information
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not update the product information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not update the product information
+
+  /api/product/v1/product/image/update:
+    patch:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: Update product image(s).
+      requestBody:
+        description: Product image update.
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  type: string
+                  example: "dyryg436476hd2n4893278hu2d"
+                files:
+                  type: string
+                  format: binary
+
+      responses:
+        "200":
+          description: Successfully updated product image gallery
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully updated product image gallery
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not update product images
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not update product images
+
+  /api/product/v1/product/image/{id}:
+    get:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: View image.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id of the image you wish to view
+      responses:
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not fetch your image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not fetch your image
+
+  /api/product/v1/product/mine?limit={limit}&sort={sort}&page={page}&q={q}:
+    get:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: View all your products.
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            enum: [1, 5, 10, 25, 50]
+          required: true
+          description: the amount of documents per page you wish to fetch, [1, 5, 10, 25, 50]
+
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: ["ascend", "descend"]
+          required: true
+          description: Latest vs Oldest first, ["ascend", "descend"]
+
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: What page of documents do you want to fetch
+
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: The name of the product(s) you wish to fetch
+
+      responses:
+        "200":
+          description: Successuly fetched a list of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successuly fetched a list of products
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not fetch the list of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not fetch the list of products
+
+  /api/product/v1/product?limit={limit}&sort={sort}&page={page}&q={q}:
+    get:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: View all products.
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            enum: [1, 5, 10, 25, 50]
+          required: true
+          description: the amount of documents per page you wish to fetch, [1, 5, 10, 25, 50]
+
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: ["ascend", "descend"]
+          required: true
+          description: Latest vs Oldest first, ["ascend", "descend"]
+
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: What page of documents do you want to fetch
+
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: The name of the product(s) you wish to fetch
+
+      responses:
+        "200":
+          description: Successuly fetched a list of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successuly fetched a list of products
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not fetch the list of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not fetch the list of products
+
+  /api/product/v1/product/delete:
+    delete:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: Delete product.
+      requestBody:
+        description: Delete product.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  type: string
+                  example: "dyryg436476hd2n4893278hu2d"
+
+      responses:
+        "200":
+          description: Successfully deleted product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully deleted product
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not delete product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not delete product
+
+  /api/product/v1/product/image/delete:
+    delete:
+      tags:
+        - Products
+      security:
+        - cookieAuth: []
+      summary: Delete product image.
+      requestBody:
+        description: Delete product image.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - imageId
+              properties:
+                imageId:
+                  type: string
+                  example: "dyryg436476hd2n4893278hu2d"
+
+      responses:
+        "200":
+          description: Successfully deleted product image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully deleted product image
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not delete product image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not delete product image
