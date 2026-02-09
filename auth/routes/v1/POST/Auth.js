@@ -34,6 +34,8 @@ router.post(
         email,
       });
       newUser.save().then((data) => {
+        console.log(data);
+
         KafkaProducer("user-created", {
           userId: data._id,
         });

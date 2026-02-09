@@ -7,7 +7,6 @@ const Auth = async (req, res, next) => {
 
   if (!accessToken) {
     return res.status(401).send({
-      error: [],
       data: {},
       success: false,
       description: "Unauthorized access",

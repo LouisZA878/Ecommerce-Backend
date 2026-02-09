@@ -21,12 +21,6 @@ const {
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:8080",
-  "http://127.0.0.1:8080",
-  "http://host.docker.internal:8080", // sometimes needed in Docker
-];
-
 const corsOptions = {
   origin: true,
   credentials: true,

@@ -12,19 +12,28 @@ const { body, validationResult, matchedData } = new ExpressValidator({
       console.log(valid);
       throw new Error("Invalid ID");
     }
+
+    return true;
   },
   isEmailExisting: async (value) => {
     const result = await User.findOne({ email: value });
+    console.log(result);
     if (result) {
       throw new Error("Invalid email");
     }
+
+    return true;
   },
 
   isUserExisting: async (value) => {
     const result = await User.findOne({ username: value });
+    console.log(result);
+
     if (result) {
       throw new Error("Invalid username");
     }
+
+    return true;
   },
 });
 
