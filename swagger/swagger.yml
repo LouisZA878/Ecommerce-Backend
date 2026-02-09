@@ -19,7 +19,9 @@ tags:
   - name: Auth
     description: Endpoints related to authentication
   - name: Products
-    description: Product-related endpoints
+    description: Product related endpoints
+  - name: Cart
+    description: Cart related endpoints
 
 paths:
   /api/auth/v1/signup:
@@ -809,3 +811,210 @@ paths:
                   description:
                     type: string
                     example: Could not delete product image
+
+  /api/product/v1/cart/add:
+    post:
+      tags:
+        - Cart
+      security:
+        - cookieAuth: []
+      summary: Add product to cart.
+      requestBody:
+        description: Product add.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+                  example: der3434720jdiew34
+
+      responses:
+        "200":
+          description: Successfully updated cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully updated cart
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not access your cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not access your cart
+
+  /api/product/v1/cart/remove:
+    delete:
+      tags:
+        - Cart
+      security:
+        - cookieAuth: []
+      summary: Could not remove product from your cart.
+      requestBody:
+        description: Product removal.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+                  example: der3434720jdiew34
+
+      responses:
+        "200":
+          description: Successfully updated cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully updated cart
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not remove product from your cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not remove product from your cart
+
+  /api/product/v1/cart/:
+    get:
+      tags:
+        - Cart
+      security:
+        - cookieAuth: []
+      summary: View cart items.
+
+      responses:
+        "200":
+          description: Successfully fetched cart details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    example:
+                      [{ productId: "Ikdnekn39074dedende", quantity: 10 }]
+                  success:
+                    type: boolean
+                    example: true
+                  description:
+                    type: string
+                    example: Successfully fetched cart details
+
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Unauthorized access
+
+        "400":
+          description: Could not fetch cart details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    example: {}
+                  success:
+                    type: boolean
+                    example: false
+                  description:
+                    type: string
+                    example: Could not fetch cart details

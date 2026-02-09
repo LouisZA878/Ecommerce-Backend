@@ -37,6 +37,6 @@ echo "[X] Sleeping 10s to give DB's time"
 sleep 10s
 
 echo "[X] Starting services"
-docker compose up --build -d auth_service product_service cart_service
+docker compose up --build -d auth_service product_service cart_service swagger_ui
 
 exit 0

@@ -27,7 +27,7 @@ router.delete(
         return res.status(400).send({
           data: {},
           success: false,
-          description: "Could not remove product from cart",
+          description: "Could not remove product from your cart",
         });
       }
 
@@ -41,7 +41,7 @@ router.delete(
       res.status(400).send({
         data: {},
         success: false,
-        description: "Could not remove product from cart",
+        description: "Could not remove product from your cart",
       });
     }
   },

@@ -11,7 +11,6 @@ const Cart = require("../../../models/Cart");
 router.get(
   "/cart",
   Auth,
-  [],
   ValidationArray("Must provide valid queries"),
   async (req, res) => {
     try {
