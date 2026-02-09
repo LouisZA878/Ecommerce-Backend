@@ -2,4 +2,8 @@
 docker-compose.yaml
 .env
 /node_modules
+/products/node_modules
+/auth/node_modules
+/kafka/node_modules
+/cart/node_modules
 Docs.MD
