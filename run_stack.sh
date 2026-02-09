@@ -29,4 +29,12 @@ echo "[X] kafka.js script terminated"
 
 cd ..
 
-docker compose up --build -d
+echo "[X] Starting service DB's"
+
+docker compose up -d product_db cart_db auth_db
+
+echo "[X] Sleeping 10s to give DB's time"
+sleep 10s
+
+echo "[X] Starting services"
+docker compose up --build -d auth_service product_service cart_service
