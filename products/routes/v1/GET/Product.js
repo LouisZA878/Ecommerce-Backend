@@ -9,6 +9,7 @@ const {
   queryLimit,
   queryPage,
   querySort,
+  paramId,
   matchedData,
   querySearch,
 } = require("../../../components/validators/Output");
@@ -217,6 +218,39 @@ router.get(
         data: {},
         success: false,
         description: "Could not fetch the list of products",
+      });
+    }
+  },
+);
+
+router.get(
+  "/product/singular/:id",
+  Auth,
+  [paramId().isIdValid()],
+  validationArray("Must provide valid inputs"),
+  async (req, res) => {
+    try {
+      const { id } = matchedData(req);
+
+      const result = await Product.findById(
+        new mongoose.Types.ObjectId(id),
+      ).select(["-userId", "-createdAt", "-updatedAt", "-__v"]);
+
+      res.status(200).send({
+        data: result,
+        success: true,
+        description: "Successfully fetched product information",
+      });
+    } catch (err) {
+      console.error(err.message);
+      KafkaProducer("error-message", {
+        error: err.message,
+        msg: "Could not fetch product information",
+      });
+      res.status(400).send({
+        data: {},
+        success: false,
+        description: "Could not fetch the products information",
       });
     }
   },

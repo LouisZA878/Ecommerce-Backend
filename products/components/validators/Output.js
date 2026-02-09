@@ -1,4 +1,10 @@
-const { body, query, validationResult, matchedData } = require("./Validator");
+const {
+  body,
+  param,
+  query,
+  validationResult,
+  matchedData,
+} = require("./Validator");
 
 const name = () =>
   body("name")
@@ -23,7 +29,7 @@ const quantity = () =>
 const Id = () => body("id").notEmpty().withMessage("ID must be valid").escape();
 
 const paramId = () =>
-  body("id").notEmpty().withMessage("ID must be valid").escape();
+  param("id").notEmpty().withMessage("ID must be valid").escape();
 
 const queryLimit = () => query("limit").notEmpty().escape();
 const querySort = () => query("sort").notEmpty().escape();
