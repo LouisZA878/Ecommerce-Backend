@@ -23,3 +23,7 @@
 3. Within your terminal, run the stack
 
 - bash ./run_stack.sh
+
+4. After a few minutes you can view the API in your browser via Swagger UI
+
+- http://localhost:8080
