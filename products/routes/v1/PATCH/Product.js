@@ -56,7 +56,7 @@ router.patch(
         }
       }
       if (!!bodyData.price) {
-        optionals.price = parseInt(bodyData.price);
+        optionals.price = Number.parseInt(bodyData.price);
       }
       if (!!bodyData.description) {
         optionals.description = bodyData.description;

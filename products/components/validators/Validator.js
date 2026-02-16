@@ -12,8 +12,8 @@ const { body, param, query, validationResult, matchedData } =
       return true;
     },
     isNumber: (value) => {
-      if (Number.isNaN(parseInt(value, 10))) {
-        throw new Error("Value must be a number");
+      if (Number.isNaN(Number.parseInt(value, 10))) {
+        throw new new TypeError("Value must be a number")();
       }
 
       return true;
@@ -30,8 +30,10 @@ const { body, param, query, validationResult, matchedData } =
     isLimitValid: (value) => {
       const options = [1, 5, 10, 25, 50];
 
-      if (!options.includes(parseInt(value))) {
-        throw new Error("Value must be a choice between 1, 5, 10, 25 and 50");
+      if (!options.includes(Number.parseInt(value))) {
+        throw new new TypeError(
+          "Value must be a choice between 1, 5, 10, 25 and 50",
+        )();
       }
 
       return true;

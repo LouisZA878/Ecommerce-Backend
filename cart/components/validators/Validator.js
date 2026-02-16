@@ -13,8 +13,8 @@ const { body, validationResult, matchedData } = new ExpressValidator({
     }
   },
   isNumber: (value) => {
-    if (Number.isNaN(parseInt(value, 10))) {
-      throw new Error("Value must be a number");
+    if (Number.isNaN(Number.parseInt(value, 10))) {
+      throw new TypeError("Value must be a number");
     }
 
     return true;

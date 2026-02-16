@@ -7,6 +7,8 @@ servers:
     description: Auth service
   - url: http://localhost:3002
     description: Products service
+  - url: http://localhost:3003
+    description: Cart service
 
 components:
   securitySchemes:
@@ -612,6 +614,7 @@ paths:
           name: q
           schema:
             type: string
+          # required: true
           description: The name of the product(s) you wish to fetch
 
       responses:
@@ -812,7 +815,7 @@ paths:
                     type: string
                     example: Could not delete product image
 
-  /api/product/v1/cart/add:
+  /api/cart/v1/cart/add:
     post:
       tags:
         - Cart
@@ -828,10 +831,14 @@ paths:
               type: object
               required:
                 - id
+                - quantity
               properties:
                 id:
                   type: string
                   example: der3434720jdiew34
+                quantity:
+                  type: integer
+                  example: 10
 
       responses:
         "200":
@@ -885,7 +892,7 @@ paths:
                     type: string
                     example: Could not access your cart
 
-  /api/product/v1/cart/remove:
+  /api/cart/v1/cart/remove:
     delete:
       tags:
         - Cart
@@ -958,7 +965,7 @@ paths:
                     type: string
                     example: Could not remove product from your cart
 
-  /api/product/v1/cart/:
+  /api/cart/v1/cart/:
     get:
       tags:
         - Cart

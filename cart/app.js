@@ -47,14 +47,11 @@ const start = async () => {
       KafkaProducer("info-message", mongoLog);
     });
     mongoose
-      .connect(
-        (MONGO = `mongodb://${MONGO_IP}:${MONGO_PORT}/${MONGO_COLLECTION}`),
-        {
-          user: MONGO_USER,
-          pass: MONGO_USER_PASSWORD,
-          authSource: "admin",
-        },
-      )
+      .connect(`mongodb://${MONGO_IP}:${MONGO_PORT}/${MONGO_COLLECTION}`, {
+        user: MONGO_USER,
+        pass: MONGO_USER_PASSWORD,
+        authSource: "admin",
+      })
       .then(() => {
         console.log(mongoLog);
         KafkaProducer("info-message", mongoLog);

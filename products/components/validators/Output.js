@@ -46,7 +46,6 @@ module.exports = {
   description,
   Id,
   name,
-  paramId,
   quantity,
   queryLimit,
   querySort,

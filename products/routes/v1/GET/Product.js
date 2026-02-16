@@ -67,7 +67,7 @@ router.get(
     try {
       const { page, limit, sort, q } = matchedData(req);
 
-      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const skip = (Number.parseInt(page) - 1) * Number.parseInt(limit);
 
       const result = await Product.aggregate([
         {
@@ -86,7 +86,7 @@ router.get(
           $skip: skip,
         },
         {
-          $limit: parseInt(limit),
+          $limit: Number.parseInt(limit),
         },
         {
           $lookup: {
@@ -153,7 +153,7 @@ router.get(
     try {
       const { page, limit, sort, q } = matchedData(req);
 
-      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const skip = (Number.parseInt(page) - 1) * Number.parseInt(limit);
 
       const result = await Product.aggregate([
         {
@@ -171,7 +171,7 @@ router.get(
           $skip: skip,
         },
         {
-          $limit: parseInt(limit),
+          $limit: Number.parseInt(limit),
         },
         {
           $lookup: {

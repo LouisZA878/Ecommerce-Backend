@@ -38,6 +38,7 @@ router.post("/refresh", async (req, res) => {
       description: "Tokens refreshed",
     });
   } catch (err) {
+    console.error(err.message);
     res.status(401).send({
       data: {},
       success: false,

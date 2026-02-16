@@ -1,5 +1,5 @@
 const { GridFSBucket, ObjectId } = require("mongodb");
-const stream = require("stream");
+const stream = require("node:stream");
 const multer = require("multer");
 const mongoose = require("mongoose");
 
