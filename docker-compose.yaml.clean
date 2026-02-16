@@ -47,6 +47,7 @@ services:
 
     depends_on:
       - kafka
+      - auth_db
 
   product_db:
     container_name: product_db
@@ -96,6 +97,7 @@ services:
 
     depends_on:
       - kafka
+      - product_db
 
   cart_db:
     container_name: cart_db
@@ -134,6 +136,10 @@ services:
       SERVICE_CLIENT_ID: cart_service
 
       KAFKAJS_NO_PARTITIONER_WARNING: 1
+
+    depends_on:
+      - kafka
+      - cart_db
 
     ports:
       - "3003:3003"
@@ -207,8 +213,6 @@ networks:
 
   cart_db_network:
     driver: bridge
-
-  shared_network:
 
   broker-kafka:
     driver: bridge
