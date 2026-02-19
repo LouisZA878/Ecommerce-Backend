@@ -1,4 +1,5 @@
-## Hey there!
+## Summary
+Within this project I blend my knowledge of NodeJS, Docker and Apache Kafka to create a basic and functional Ecommerce Backend. With Auth, Product and Cart services.
 
 ### Tech stack
 
